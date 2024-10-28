@@ -1,9 +1,9 @@
 version: '3.8'
 
 services:
-  ollama-base:
-    image: ollama/ollama
-    container_name: ollama_server_base
+  base-config:
+    build: .
+    container_name: void_air_ctr
     ports:
       - "11434:11434"
     deploy:
@@ -12,13 +12,13 @@ services:
           cpus: '4.0'   # Minimum 4 CPUs
           memory: 8g    # Minimum 8 GB of RAM
     environment:
-      - SOME_ENV_VAR=value
-    volumes:
-      - ollama:/root/.ollama
+      #- SOME_ENV_VAR=value
+      #volumes:
+      #  - llama-cpp:/root/.void-ai-ctr
 
-  ollama-nvidia:
-    extends: ollama-base
-    container_name: ollama_server_nvidia
+  nvidia-config:
+    extends: base-config
+    container_name: void_ai_ctr_nvidia
     runtime: nvidia
     deploy:
       resources:
@@ -28,15 +28,12 @@ services:
     profiles:
       - nvidia
 
-  ollama-amd:
-    extends: ollama-base
-    container_name: ollama_server_amd
-    image: ollama/ollama:rocm
+  amd-config:
+    extends: base-config
+    container_name: void_ai_ctr_amd
+    #image: ollama/ollama:rocm
     devices:
       - /dev/kfd
       - /dev/dri
     profiles:
       - amd
-
-volumes:
-  ollama:
